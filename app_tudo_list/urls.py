@@ -17,8 +17,11 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from django.shortcuts import redirect
+from .views import home, dashboard
 
 urlpatterns = [
+    path('', home, name='home'),
+    path('dashboard/', dashboard, name='dashboard'),
     path('admin/', admin.site.urls),
     path('registrar/', include(('register.urls', 'register'), namespace='register')),
     path ('historico/', include(('historico.urls', 'historico'), namespace='historico')),

@@ -1,6 +1,6 @@
 from django import forms
 from .models import User
-from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 
 class RegisterForm(UserCreationForm):
     first_name = forms.CharField(max_length=30, required=True, label="Nome")
@@ -28,3 +28,17 @@ class RegisterForm(UserCreationForm):
         if commit:
             user.save()
         return user
+
+class LoginForm(AuthenticationForm):
+    username = forms.EmailField(label="Email", max_length=254, widget=forms.EmailInput(attrs={
+                'class': "form-control", 
+                'placeholder': 'email@example.com'
+                }))
+    password = forms.CharField(label="Password", widget=forms.PasswordInput(attrs={
+                'class': "form-control",
+                'placeholder': 'Senha'
+                }))
+
+    class Meta:
+        model = User
+        fields = ['username', 'password']

@@ -1,5 +1,7 @@
 from django.shortcuts import render, redirect
-from .forms import RegisterForm
+from django.contrib.auth import logout, authenticate, login
+from .forms import RegisterForm, LoginForm
+from django.template import RequestContext
 from django.core.mail import send_mail
 from django.utils.crypto import get_random_string
 from django.contrib import messages
@@ -74,3 +76,25 @@ def confirm_code(request):
     return render(request, 'register/verificacao_de_codigo.html', {'user_email': user_email})
 
 
+def login_user(request):
+    if request.method == 'POST':
+        form = LoginForm(data=request.POST)
+        if form.is_valid():
+            username = request.POST['username']
+            password = request.POST['password']
+
+            user = authenticate(username=username, password=password)
+            if user is not None:
+                if user.is_active:
+                  login(request, user)
+                  return redirect('dashboard')
+            else:
+                return render(request, 'register/login.html', {'form': form})
+    else:
+        form = LoginForm()
+    
+    return render(request, 'register/login.html', {'form': form})
+
+def logout_user(request):
+    logout(request)
+    return redirect('home')
